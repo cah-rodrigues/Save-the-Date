@@ -1,8 +1,10 @@
 import fotoCasal from "../assets/casal.jpeg";
 import Countdown from "./Countdown";
+import SpotifyPlayer from "./SpotifyPlayer";
 
 function Hero() {
     return (
+    <>
         <section className="relative h-screen overflow-hidden">
 
             {/*Imagem de fundo*/}
@@ -39,9 +41,19 @@ function Hero() {
                     Com carinho, Breno & Carla <br />
                 </p>
 
+                {/* Spotify no celular */}
+                <div className="mt-10 md:hidden">
+                    <SpotifyPlayer />
+                </div>
+
             </div>
 
         </section>
+
+        <div className="hidden md:block fixed bottom-6 right-6 z-50">
+            <SpotifyPlayer />
+        </div>
+    </>
     );
 }
 
