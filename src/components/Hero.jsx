@@ -5,7 +5,7 @@ import SpotifyPlayer from "./SpotifyPlayer";
 function Hero() {
     return (
     <>
-        <section className="relative h-screen overflow-hidden">
+        <section className="relative min-h-screen overflow-x-hidden">
 
             {/*Imagem de fundo*/}
             <img 
@@ -18,7 +18,7 @@ function Hero() {
             <div className="absolute inset-0 bg-black/40"></div>
 
             {/*Conteúdo*/}
-            <div className="relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-6">
+            <div className="mt-12 relative z-10 flex h-full flex-col items-center justify-center text-center text-white px-6">
 
                 <p className="mb-4 uppercase tracking-[0.4em] text-sm md:text-base">
                     Save The Date
