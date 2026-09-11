@@ -1,1 +1,419 @@
 @import "tailwindcss";
+
+/* ==========================================================================
+   Design System — Jardim em Flor
+   Paleta quente sobre creme, com tons de acento escuros o bastante para
+   serem lidos com conforto. Formas arredondadas e simetricas.
+   ========================================================================== */
+
+@theme {
+  /* ---------- Tipografia ---------- */
+  --font-display: "Cormorant Garamond", "Iowan Old Style", Georgia, "Times New Roman", serif;
+  --font-body: "Jost", "Avenir Next", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --font-script: "Parisienne", "Snell Roundhand", "Brush Script MT", cursive;
+
+  /* ---------- Neutros ----------
+     Contraste sobre o creme (#fbf7f2):
+     ink 13.4:1 · stone 7.7:1 · mist 4.6:1. Todos passam no AA. */
+  --color-cream: #fbf7f2;
+  --color-shell: #f6efe7;
+  --color-line: #e2d3c4;
+  --color-ink: #2a2825;
+  --color-stone: #544c45;
+  --color-mist: #786d64;
+
+  /* ---------- Rose ---------- */
+  --color-blush-50: #fbf2ef;
+  --color-blush-100: #f5e1db;
+  --color-blush-200: #e7c6bd;
+  --color-blush-300: #cf9e93;
+  --color-blush-500: #a2625b; /* 4.9:1 no creme */
+  --color-blush-700: #7b4540; /* 7.3:1 no creme */
+
+  /* ---------- Salvia ---------- */
+  --color-leaf-50: #f1f5ef;
+  --color-leaf-100: #e0e9dd;
+  --color-leaf-200: #cadbc7;
+  --color-leaf-300: #a8bda7;
+  --color-leaf-500: #5d7a5f; /* 5.2:1 no creme */
+  --color-leaf-700: #3f5743; /* 8.3:1 no creme */
+
+  /* ---------- Azul-jeans ---------- */
+  --color-denim-50: #eff3f8;
+  --color-denim-100: #dde6f0;
+  --color-denim-200: #c4d3e5;
+  --color-denim-300: #a4bad4;
+  --color-denim-500: #4f6b89; /* 5.4:1 no creme */
+  --color-denim-700: #35506b; /* 8.0:1 no creme */
+
+  /* ---------- Escala tipografica fluida (250px a 1600px) ---------- */
+  --text-eyebrow: clamp(0.68rem, 2.2vw, 0.8rem);
+  --text-eyebrow--line-height: 1.6;
+  --text-mini: clamp(0.76rem, 2.6vw, 0.86rem);
+  --text-mini--line-height: 1.6;
+  --text-body: clamp(0.95rem, 3.1vw, 1.05rem);
+  --text-body--line-height: 1.72;
+  --text-lead: clamp(1.02rem, 3.6vw, 1.24rem);
+  --text-lead--line-height: 1.68;
+  --text-h4: clamp(1.06rem, 4vw, 1.3rem);
+  --text-h4--line-height: 1.35;
+  --text-h3: clamp(1.35rem, 5.2vw, 1.95rem);
+  --text-h3--line-height: 1.25;
+  --text-h2: clamp(1.8rem, 6.4vw, 3rem);
+  --text-h2--line-height: 1.16;
+  --text-h1: clamp(2.6rem, 13vw, 6.2rem);
+  --text-h1--line-height: 0.98;
+  --text-script: clamp(1.35rem, 5.4vw, 2.3rem);
+  --text-script--line-height: 1.35;
+  --text-numeral: clamp(1.5rem, 7vw, 2.6rem);
+  --text-numeral--line-height: 1;
+
+  /* ---------- Raios ---------- */
+  --radius-xs: 10px;
+  --radius-sm: 14px;
+  --radius-md: 20px;
+  --radius-lg: 26px;
+  --radius-xl: 32px;
+  --radius-2xl: 40px;
+  --radius-3xl: 52px;
+
+  /* ---------- Sombras quentes ---------- */
+  --shadow-soft: 0 1px 2px rgba(80, 60, 50, 0.06), 0 10px 28px -16px rgba(80, 60, 50, 0.3);
+  --shadow-lift: 0 2px 6px rgba(80, 60, 50, 0.08), 0 28px 54px -28px rgba(80, 60, 50, 0.42);
+  --shadow-petal: 0 20px 44px -26px rgba(120, 85, 78, 0.55);
+
+  /* ---------- Movimento ---------- */
+  --ease-soft: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --ease-petal: cubic-bezier(0.34, 1.3, 0.64, 1);
+
+  --animate-float: float 11s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  --animate-sway: sway 9s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+  --animate-breathe: breathe 5s ease-in-out infinite;
+  --animate-fade-up: fade-up 0.6s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  --animate-pop-in: pop-in 0.34s cubic-bezier(0.34, 1.3, 0.64, 1) both;
+  --animate-sheet-up: sheet-up 0.36s cubic-bezier(0.22, 0.61, 0.36, 1) both;
+  --animate-scroll-hint: scroll-hint 2.2s cubic-bezier(0.45, 0.05, 0.55, 0.95) infinite;
+
+  /* ---------- Breakpoint extra para telas minusculas ---------- */
+  --breakpoint-xs: 25rem;
+}
+
+/* ==========================================================================
+   Keyframes
+   ========================================================================== */
+
+@keyframes float {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) rotate(0deg);
+  }
+  50% {
+    transform: translate3d(0, -14px, 0) rotate(3deg);
+  }
+}
+
+@keyframes sway {
+  0%,
+  100% {
+    transform: rotate(-4deg);
+  }
+  50% {
+    transform: rotate(4deg);
+  }
+}
+
+@keyframes breathe {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.5;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.85;
+  }
+}
+
+@keyframes shimmer {
+  from {
+    transform: translateX(-130%);
+  }
+  to {
+    transform: translateX(230%);
+  }
+}
+
+@keyframes fade-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes pop-in {
+  from {
+    opacity: 0;
+    transform: scale(0.94);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes sheet-up {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 22px, 0) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes scroll-hint {
+  0% {
+    transform: translateY(0);
+    opacity: 0;
+  }
+  35% {
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(14px);
+    opacity: 0;
+  }
+}
+
+/* ==========================================================================
+   Base
+   ========================================================================== */
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    overflow-x: clip;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    margin: 0;
+    min-height: 100dvh;
+    overflow-x: clip;
+    background-color: var(--color-cream);
+    color: var(--color-stone);
+    font-family: var(--font-body);
+    font-size: var(--text-body);
+    line-height: 1.72;
+    font-weight: 400;
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    font-family: var(--font-display);
+    color: var(--color-ink);
+    font-weight: 500;
+    letter-spacing: -0.005em;
+    text-wrap: balance;
+  }
+
+  p {
+    text-wrap: pretty;
+  }
+
+  img {
+    max-width: 100%;
+    display: block;
+  }
+
+  ::selection {
+    background: var(--color-blush-200);
+    color: var(--color-ink);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-leaf-700);
+    outline-offset: 3px;
+    border-radius: var(--radius-xs);
+  }
+
+  /* Ancoras nao ficam escondidas sob a navbar fixa */
+  section[id] {
+    scroll-margin-top: 5.5rem;
+  }
+
+  button,
+  a {
+    touch-action: manipulation;
+  }
+
+  /* O preflight do Tailwind v4 zera o cursor dos botoes; devolvemos a mao. */
+  button:not(:disabled),
+  [role="button"]:not([aria-disabled="true"]),
+  a[href],
+  label[for],
+  summary {
+    cursor: pointer;
+  }
+
+  button:disabled {
+    cursor: not-allowed;
+  }
+}
+
+/* ==========================================================================
+   Utilitarios do projeto
+   ========================================================================== */
+
+/* --- Conteiner com gutter que sobrevive a 250px --- */
+.shell {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 76rem;
+  padding-inline: clamp(1rem, 5vw, 3rem);
+}
+
+.shell-narrow {
+  width: 100%;
+  margin-inline: auto;
+  max-width: 46rem;
+  padding-inline: clamp(1rem, 5vw, 3rem);
+}
+
+/* --- Molduras: raio igual nos quatro cantos, sem ponta de ogiva --- */
+.frame-soft {
+  border-radius: clamp(1.1rem, 3.5vw, 1.75rem);
+}
+.frame-pill {
+  border-radius: clamp(1.75rem, 6vw, 2.75rem);
+}
+.frame-round {
+  border-radius: 50%;
+}
+
+/* --- Revelacao no scroll --- */
+.reveal {
+  opacity: 0;
+  transition:
+    opacity 0.85s var(--ease-soft),
+    transform 0.85s var(--ease-soft);
+  transition-delay: var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+.reveal--up {
+  transform: translate3d(0, 30px, 0);
+}
+.reveal--down {
+  transform: translate3d(0, -24px, 0);
+}
+.reveal--left {
+  transform: translate3d(-34px, 0, 0);
+}
+.reveal--right {
+  transform: translate3d(34px, 0, 0);
+}
+.reveal--zoom {
+  transform: scale(0.92);
+}
+.reveal--bloom {
+  transform: scale(0.94) translate3d(0, 20px, 0);
+}
+.reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* --- Parallax suave (so transform, sem reflow) --- */
+.parallax {
+  transform: translate3d(0, var(--parallax, 0px), 0);
+}
+
+/* --- Linha decorativa --- */
+.divider-bloom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.75rem;
+  color: var(--color-blush-300);
+}
+.divider-bloom::before,
+.divider-bloom::after {
+  content: "";
+  height: 1px;
+  width: clamp(1.5rem, 12vw, 5rem);
+  background: linear-gradient(to right, transparent, currentColor, transparent);
+}
+
+/* --- Texto sobre foto: sombra curta que segura a leitura --- */
+.on-photo {
+  text-shadow: 0 1px 3px rgba(20, 16, 14, 0.6);
+}
+
+/* --- Numeros tabulares para contagem e precos --- */
+.tnum {
+  font-variant-numeric: tabular-nums;
+  font-feature-settings: "tnum";
+}
+
+/* --- Brilho que percorre um botao --- */
+.sheen {
+  position: relative;
+  overflow: hidden;
+}
+.sheen > span {
+  position: relative;
+  z-index: 1;
+}
+.sheen::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(100deg, transparent 35%, rgba(255, 255, 255, 0.4) 50%, transparent 65%);
+  transform: translateX(-130%);
+  pointer-events: none;
+}
+.sheen:hover::after {
+  animation: shimmer 1.1s var(--ease-soft);
+}
+
+/* --- Scrollbar discreta --- */
+@supports (scrollbar-color: auto) {
+  html {
+    scrollbar-color: var(--color-blush-300) transparent;
+    scrollbar-width: thin;
+  }
+}
+
+/* ==========================================================================
+   Preferencia por menos movimento
+   ========================================================================== */
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    transition-delay: 0ms !important;
+  }
+  .reveal {
+    opacity: 1;
+    transform: none;
+  }
+  .parallax {
+    transform: none;
+  }
+}
