@@ -1,3 +1,0 @@
-# O site usa rotas por hash (/#/presentes), entao o caminho real e sempre "/".
-# Este fallback evita a pagina de 404 da Cloudflare em URLs digitadas na mao.
-/*  /index.html  200

@@ -15,93 +15,82 @@ npm run dev
 
 Outros comandos: `npm run build`, `npm run preview`, `npm run lint`.
 
-## Deploy
+## Como o deploy funciona
 
-O deploy e automatico via GitHub Actions (`.github/workflows/deploy.yml`):
+O projeto na Cloudflare e ligado direto a este repositorio no GitHub. A cada
+push, a **propria Cloudflare** clona o repo, roda o build e publica. Nao existe
+workflow do GitHub Actions nem token guardado em lugar nenhum.
 
 | Evento | Resultado |
 |---|---|
-| push na `main` | deploy de **producao** em `carlaebreno.pages.dev` |
-| pull request / push em outra branch | deploy de **preview** com URL propria |
-| Actions → Deploy → Run workflow | deploy manual da branch escolhida |
+| push na `main` | producao em `carlaebreno.pages.dev` |
+| push em outra branch / PR | preview em `<branch>.carlaebreno.pages.dev` |
 
-O workflow roda `npm ci`, `npm run lint`, `npm run build` e envia a pasta `dist`
-para a Cloudflare. Se o lint ou o build falhar, nada vai pro ar.
+Se o `npm run lint` ou o `npm run build` falhar, o deploy nao acontece e o site
+no ar continua sendo o da ultima versao que passou.
 
-Para publicar da sua maquina, sem passar pelo CI: `npm run build && npm run deploy`.
+Para publicar da sua maquina sem passar por isso (emergencia):
+
+```bash
+npx wrangler login          # OAuth no navegador, sem token
+npm run build && npm run deploy
+```
 
 ---
 
 ## Configuracao inicial (feita uma vez)
 
-> **Contexto de contas:** o projeto vive na conta Cloudflare da
-> **carlacristina.work@gmail.com**. O acesso do Matheus e pelo login
-> **matheusgobetti12@gmail.com**, que e membro Administrador dessa conta.
-> Em todos os passos abaixo, use o seletor de conta no topo do dashboard para
-> garantir que voce esta **na conta da Carla**, e nao na conta pessoal — os IDs
-> e tokens sao por conta e nao se misturam.
->
-> Se o login do Matheus ainda nao aparecer na conta da Carla, ela precisa
-> convida-lo primeiro em **Manage Account → Members → Invite**, com o papel
-> *Administrator*.
+> **Quem precisa fazer:** a dona da conta Cloudflare do projeto
+> (**carlacristina.work@gmail.com**), que tambem e a dona do repositorio no
+> GitHub (`cah-rodrigues`). Os dois passos abaixo exigem essa titularidade:
+> ligar um GitHub App a um repositorio pessoal so o dono pode fazer, e o projeto
+> precisa nascer dentro da conta Cloudflare certa.
 
-### 1. Criar o projeto na Cloudflare Pages
+### 1. Criar o projeto conectado ao GitHub
 
-```bash
-npx wrangler login                 # abre o navegador; entre com o login que tem acesso
-npx wrangler pages project create carlaebreno --production-branch=main
-```
+No dashboard da Cloudflare, **com a conta do projeto selecionada**:
 
-Se o wrangler perguntar em qual conta criar, escolha a da Carla.
+**Workers & Pages → Create → Pages → Connect to Git**
 
-> ⚠️ **Nao use a opcao "Connect to Git" do dashboard.** Um projeto Pages ligado
-> ao GitHub faz o proprio build e passa a recusar upload via `wrangler`, o que
-> conflita com este pipeline. O projeto tem que ser do tipo *Direct Upload*, que
-> e o que o comando acima cria.
+Autorize o GitHub quando ele pedir e escolha o repositorio
+`cah-rodrigues/Save-the-Date`.
 
-O nome `carlaebreno` e global em toda a Cloudflare. Se estiver em uso, escolha
-outro e troque nos tres lugares: `CF_PROJECT_NAME` no workflow, o script
-`deploy` do `package.json` e o `homepage` do `package.json`.
+> ⚠️ Um projeto Pages nasce *Connect to Git* ou *Direct Upload* e **nao da para
+> converter depois**. Se ja existir um `carlaebreno` criado por engano via
+> `wrangler pages project create`, apague antes de comecar — senao o nome fica
+> ocupado e a conexao com o Git nao acontece.
 
-### 2. Pegar o Account ID
+### 2. Configuracao de build
 
-No dashboard, com a conta da Carla selecionada, va em **Workers & Pages**. O
-**Account ID** aparece na barra lateral direita. Ele tambem e o trecho de 32
-caracteres na URL: `dash.cloudflare.com/<account-id>/...`
+| Campo | Valor |
+|---|---|
+| Project name | `carlaebreno` |
+| Production branch | `main` |
+| Framework preset | `Vite` |
+| Build command | `npm run lint && npm run build` |
+| Build output directory | `dist` |
+| Root directory | `/` |
 
-### 3. Criar o API token
+### 3. Variavel de ambiente do build
 
-**My Profile → API Tokens → Create Token → Create Custom Token**
-
-- **Permissions:** `Account` · `Cloudflare Pages` · `Edit`
-- **Account Resources:** `Include` · a conta da **Carla**
-- **TTL:** deixe sem expiracao, ou marque no calendario para renovar antes
-
-Copie o token na hora — a Cloudflare so mostra ele uma vez.
-
-> O token herda as permissoes que voce tem na conta. Como Administrador, a opcao
-> `Cloudflare Pages · Edit` aparece normalmente. Se ela nao aparecer, o papel do
-> convite foi mais restrito que Administrator.
-
-### 4. Cadastrar os secrets no GitHub
-
-No repositorio `cah-rodrigues/Save-the-Date` (precisa de acesso de admin):
-**Settings → Secrets and variables → Actions → New repository secret**
+Ainda na tela de configuracao, em **Environment variables**, adicione:
 
 | Nome | Valor |
 |---|---|
-| `CLOUDFLARE_API_TOKEN` | o token do passo 3 |
-| `CLOUDFLARE_ACCOUNT_ID` | o Account ID do passo 2 (conta da Carla) |
+| `NODE_VERSION` | `24` |
 
-Os nomes precisam ser exatamente esses — o workflow procura por eles.
+Esse passo nao e opcional. O Vite 8 exige Node 20.19+ e o builder da Cloudflare
+pode subir com uma versao mais antiga por padrao — o sintoma e um build que
+quebra com erro de sintaxe ou de engine sem explicar o motivo.
 
-### 5. Primeiro deploy
+### 4. Save and Deploy
 
-Faca push na `main` (ou rode o workflow manualmente em **Actions → Deploy →
-Run workflow**). Ao final, o resumo da execucao mostra a URL publicada.
+O primeiro build roda na hora. Dos proximos pushes em diante e automatico.
+
+O nome `carlaebreno` e global em toda a Cloudflare. Se estiver ocupado, escolha
+outro e atualize o `homepage` e o script `deploy` do `package.json`.
 
 ## Dominio proprio
 
-Quando quiserem trocar `carlaebreno.pages.dev` por um dominio de verdade:
-**Workers & Pages → carlaebreno → Custom domains → Set up a domain**. O
-pipeline nao muda — o `base` do Vite ja e `/` e serve em qualquer dominio.
+**Workers & Pages → carlaebreno → Custom domains → Set up a domain.** Nada no
+codigo muda: o `base` do Vite ja e `/` e serve em qualquer dominio.

@@ -2,6 +2,8 @@ import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 export default defineConfig({
   // Cloudflare Pages serve o site na raiz do dominio.
   base: '/',
@@ -11,8 +13,5 @@ export default defineConfig({
     // so para os arquivos com hash no nome.
     assetsDir: 'static',
   },
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
+  plugins: [react(), tailwindcss(), cloudflare()],
 })

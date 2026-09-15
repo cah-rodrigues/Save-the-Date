@@ -1,0 +1,17 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "save-the-date",
+  "compatibility_date": "2026-09-11",
+  "observability": {
+    "enabled": true
+  },
+  "assets": {
+    "directory": "./dist",
+    // O site roteia por hash (/#/presentes), entao o caminho real e sempre "/"
+    // e nao existe rota de servidor para reescrever. Deixar em "none" faz um
+    // arquivo faltando responder 404 de verdade — com "single-page-application"
+    // ele devolveria o index.html com status 200, que foi exatamente o que
+    // escondeu o build quebrado que estava no ar.
+    "not_found_handling": "none"
+  }
+}
